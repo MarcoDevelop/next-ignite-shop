@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { GetServerSideProps, GetStaticPaths, GetStaticProps } from 'next/types'
+import { GetStaticPaths, GetStaticProps } from 'next/types'
 import Stripe from 'stripe'
 import { stripe } from '../../lib/stripe'
 import { ImageContainer, ProductContainer, ProductDetails } from '../../styles/pages/product'
@@ -15,7 +15,6 @@ interface ProductProps {
 }
 
 export default function Product({ product }: ProductProps ){
- 
   return (
     <ProductContainer>
       <ImageContainer>
@@ -40,7 +39,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     paths: [
       { params: { id: 'prod_N6lvs3jFZdUiZt' } },
     ],
-    fallback: false,
+    fallback: 'blocking',
   }
 }
 
@@ -68,4 +67,8 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
     },
     revalidate: 60 * 60 * 1, // 1 hours
   }
+}
+
+function userRouter(): { isFallback: any } {
+  throw new Error('Function not implemented.')
 }
