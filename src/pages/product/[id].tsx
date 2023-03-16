@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Image from 'next/image'
+import Head from 'next/head'
 import { GetStaticPaths, GetStaticProps } from 'next/types'
 import { useState } from 'react'
 import Stripe from 'stripe'
@@ -17,9 +18,9 @@ interface ProductProps {
   }
 }
 
-export default function Product({ product }: ProductProps ){
+export default function Product({ product }: ProductProps) {
   const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
- 
+
   async function handleBuyProduct() {
     try {
       setIsCreatingCheckoutSession(true)
@@ -40,21 +41,27 @@ export default function Product({ product }: ProductProps ){
   }
 
   return (
-    <ProductContainer>
-      <ImageContainer>
-        <Image src={product.imageUrl} width={520} height={520} alt="" />
-      </ImageContainer>
+    <>
+      <Head>
+        <title>{product.name} | Ignite Shop</title>
+      </Head>
 
-      <ProductDetails> 
-        <h1>{product.name}</h1>
-        <span>{product.price}</span>
-        <p>{product.description}</p>
-      
-        <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>
-          Comprar agora
-        </button>
-      </ProductDetails>
-    </ProductContainer>
+      <ProductContainer>
+        <ImageContainer>
+          <Image src={product.imageUrl} width={520} height={520} alt="" />
+        </ImageContainer>
+
+        <ProductDetails>
+          <h1>{product.name}</h1>
+          <span>{product.price}</span>
+          <p>{product.description}</p>
+
+          <button disabled={isCreatingCheckoutSession} onClick={handleBuyProduct}>
+            Comprar agora
+          </button>
+        </ProductDetails>
+      </ProductContainer>
+    </>
   )
 }
 
@@ -67,7 +74,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 }
 
-export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ params }:any) => {
+export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ params }: any) => {
   const productId = params.id;
 
   const product = await stripe.products.retrieve(productId, {
